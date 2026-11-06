@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>醫護英文互動學習網 Advanced Medical English</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #0d9488;
+            color: #0d9488;
+            font-weight: 600;
+        }
+        .card-hover {
+            transition: all 0.2s ease-in-out;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-teal-600 text-white p-2 rounded-lg">
+                        <i class="fa-solid fa-user-nurse text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg text-slate-900 leading-tight">醫護英文學習網</h1>
+                        <p class="text-xs text-teal-600 font-medium">Advanced Medical English</p>
+                    </div>
+                </div>
+                
+                <nav class="flex space-x-4 sm:space-x-8">
+                    <button onclick="switchTab('learn')" id="tab-learn" class="tab-btn active py-4 px-2 text-sm sm:text-base font-medium text-slate-600 hover:text-teal-600 transition-colors">
+                        <i class="fa-solid fa-book-open mr-1"></i> 課程內容
+                    </button>
+                    <button onclick="switchTab('quiz')" id="tab-quiz" class="tab-btn py-4 px-2 text-sm sm:text-base font-medium text-slate-600 hover:text-teal-600 transition-colors">
+                        <i class="fa-solid fa-gamepad mr-1"></i> 問答測驗遊戲
+                    </button>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- ================= PAGE 1: LEARN (學習單元) ================= -->
+        <section id="page-learn" class="space-y-8">
+            <!-- Banner -->
+            <div class="bg-gradient-to-r from-teal-700 to-teal-500 rounded-2xl p-6 sm:p-8 text-white shadow-lg">
+                <div class="max-w-3xl">
+                    <span class="bg-teal-800/60 text-teal-100 text-xs px-3 py-1 rounded-full font-semibold uppercase tracking-wider">Unit 4: Admission & History Taking</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold mt-2 mb-3">入院護理評估與病史詢問</h2>
+                    <p class="text-teal-50 text-sm sm:text-base leading-relaxed">
+                        掌握醫院病房常見詞彙與向病人詢問生活習慣、過往病史（如高血壓、糖尿病、慢性病等）之關鍵英文問句。
+                    </p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Section -->
+            <div>
+                <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <i class="fa-solid fa-spell-check text-teal-600 mr-2"></i> 核心醫護單字 (Core Vocabulary)
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="vocab-grid">
+                    <!-- Vocab items injected by JS -->
+                </div>
+            </div>
+
+            <!-- Clinical Sentences Section -->
+            <div>
+                <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                    <i class="fa-solid fa-comments text-teal-600 mr-2"></i> 病史詢問實用句型 (History Taking Phrases)
+                </h3>
+                <div class="space-y-4" id="sentence-list">
+                    <!-- Sentence items injected by JS -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= PAGE 2: QUIZ (問答測驗遊戲) ================= -->
+        <section id="page-quiz" class="hidden max-w-2xl mx-auto">
+            
+            <!-- STEP 1: Student Information Form -->
+            <div id="quiz-form-card" class="bg-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-100">
+                <div class="text-center mb-6">
+                    <div class="w-12 h-12 bg-teal-100 text-teal-700 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fa-solid fa-id-card text-xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-900">進入問答測驗</h2>
+                    <p class="text-slate-500 text-sm mt-1">請先填寫基本資料，完成測驗後可下載成績紀錄表 (CSV)</p>
+                </div>
+
+                <form id="student-info-form" onsubmit="startQuiz(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1" for="student-name">學生姓名 <span class="text-red-500">*</span></label>
+                        <input type="text" id="student-name" required placeholder="例如：王小明" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1" for="student-dept">科系 <span class="text-red-500">*</span></label>
+                        <input type="text" id="student-dept" required placeholder="例如：老人服務事業管理系 / 護理系" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1" for="student-id">學號 <span class="text-red-500">*</span></label>
+                        <input type="text" id="student-id" required placeholder="例如：11012345" class="w-full px-4 py-2.5 rounded-lg border border-slate-300 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 outline-none transition-all">
+                    </div>
+
+                    <button type="submit" class="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-colors mt-6 flex items-center justify-center space-x-2">
+                        <span>開始答題</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- STEP 2: Active Quiz Area -->
+            <div id="quiz-game-card" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-100">
+                <!-- Progress Header -->
+                <div class="flex justify-between items-center mb-4 pb-4 border-b border-slate-100">
+                    <div class="text-xs sm:text-sm font-medium text-slate-500">
+                        學生：<span id="display-student-info" class="text-teal-700 font-semibold"></span>
+                    </div>
+                    <div class="bg-teal-50 text-teal-700 text-xs font-bold px-3 py-1 rounded-full">
+                        第 <span id="current-q-num">1</span> / <span id="total-q-num">5</span> 題
+                    </div>
+                </div>
+
+                <!-- Question Text -->
+                <div class="mb-6">
+                    <h3 id="question-text" class="text-lg sm:text-xl font-bold text-slate-900 leading-snug">
+                        <!-- Dynamic Question -->
+                    </h3>
+                </div>
+
+                <!-- Options -->
+                <div id="options-container" class="space-y-3 mb-6">
+                    <!-- Dynamic Options -->
+                </div>
+
+                <!-- Feedback Message -->
+                <div id="feedback-box" class="hidden p-4 rounded-xl mb-6 text-sm font-medium flex items-start space-x-2">
+                    <i id="feedback-icon" class="fa-solid mt-0.5 text-base"></i>
+                    <div id="feedback-text"></div>
+                </div>
+
+                <!-- Next Button -->
+                <button id="next-btn" onclick="nextQuestion()" class="hidden w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 px-4 rounded-xl transition-colors">
+                    下一題
+                </button>
+            </div>
+
+            <!-- STEP 3: Quiz Result & CSV Download -->
+            <div id="quiz-result-card" class="hidden bg-white p-6 sm:p-8 rounded-2xl shadow-md border border-slate-100 text-center">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa-solid fa-trophy text-3xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900 mb-1">測驗完成！</h2>
+                <p class="text-slate-500 text-sm mb-6">感謝您的參與，以下是您的測驗成績：</p>
+
+                <!-- Result Score Board -->
+                <div class="bg-slate-50 rounded-xl p-4 sm:p-6 mb-6 text-left space-y-2 border border-slate-100">
+                    <div class="flex justify-between border-b border-slate-200 pb-2">
+                        <span class="text-slate-600">姓名:</span>
+                        <span id="res-name" class="font-semibold text-slate-800"></span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-200 pb-2">
+                        <span class="text-slate-600">科系:</span>
+                        <span id="res-dept" class="font-semibold text-slate-800"></span>
+                    </div>
+                    <div class="flex justify-between border-b border-slate-200 pb-2">
+                        <span class="text-slate-600">學號:</span>
+                        <span id="res-id" class="font-semibold text-slate-800"></span>
+                    </div>
+                    <div class="flex justify-between pt-1">
+                        <span class="text-slate-600">最終得分:</span>
+                        <span id="res-score" class="font-bold text-xl text-teal-600"></span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <button onclick="downloadCSV()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-colors flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-file-csv text-lg"></i>
+                        <span>下載成績 CSV 檔案</span>
+                    </button>
+                    <button onclick="resetQuiz()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-4 rounded-xl transition-colors">
+                        再試一次
+                    </button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+        <div class="max-w-6xl mx-auto px-4 text-center text-slate-500 text-xs sm:text-sm">
+            <p>高級醫護英文 (Advanced Medical English) - 入院與病史詢問單元</p>
+            <p class="mt-1 text-slate-400">適用於 GitHub Pages 靜態網頁託管</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // ================= DATA DEFINITIONS =================
+        const vocabData = [
+            { word: "Ward", phonetic: "/wɔːd/", type: "n.", meaning: "病房；病室", desc: "如：geriatric ward (老年病房)" },
+            { word: "Admission", phonetic: "/ədˈmɪʃ.ən/", type: "n.", meaning: "入院；准許進入", desc: "病患辦理入院登記之程序" },
+            { word: "Asthma", phonetic: "/ˈæz.mə/", type: "n.", meaning: "氣喘", desc: "常見呼吸道慢性疾病" },
+            { word: "Hypertension", phonetic: "/ˌhaɪ.pɚˈten.ʃən/", type: "n.", meaning: "高血壓", desc: "常簡稱為 HTN" },
+            { word: "Diabetes Mellitus", phonetic: "/ˌdaɪ.əˈbiː.tiːz/", type: "n.", meaning: "糖尿病", desc: "簡稱 DM，臨床極常見" },
+            { word: "Chronic Disease", phonetic: "/ˈkrɑː.nɪk/", type: "n.", meaning: "慢性疾病", desc: "需長期追蹤治療之病症" },
+            { word: "Epilepsy", phonetic: "/ˈep.ə.lep.si/", type: "n.", meaning: "癲癇", desc: "神經系統疾病" },
+            { word: "Hemophilia", phonetic: "/ˌhiː.məˈfɪl.i.ə/", type: "n.", meaning: "血友病", desc: "凝血功能異常疾病" }
+        ];
+
+        const sentenceData = [
+            { en: "What was the highest level of education you completed?", zh: "您完成的最高學歷是什麼？" },
+            { en: "Within the last six months, have you taken any medicine?", zh: "過去六個月內，您有服用任何藥物嗎？" },
+            { en: "Have you ever been admitted to a hospital?", zh: "您曾經住院過嗎？如果是，是什麼時候？因為什麼原因？" },
+            { en: "Do you have any allergies? Are you allergic to any medicines or foods?", zh: "您有任何過敏嗎？對藥物或食物過敏嗎？" },
+            { en: "Do you smoke? If so, how many cigarettes a day?", zh: "您有抽菸嗎？有的話一天抽幾支？抽多久了？" },
+            { en: "Have you ever had asthma, hypertension, or diabetes?", zh: "您曾經患有氣喘、高血壓或糖尿病嗎？" }
+        ];
+
+        const questionsData = [
+            {
+                question: "英文單詞「Ward」在醫院環境中主要代表什麼意思？",
+                options: ["手術室", "病房", "掛號處", "急診室"],
+                answer: 1,
+                explanation: "Ward 意指醫院中的「病房」或「病室」。"
+            },
+            {
+                question: "「Diabetes Mellitus (DM)」簡稱為糖尿病，臨床英文簡寫為何？",
+                options: ["HTN", "DM", "CPR", "BP"],
+                answer: 1,
+                explanation: "Diabetes Mellitus 的縮寫為 DM。"
+            },
+            {
+                question: "護理師問：「Do you have any allergies?」是在詢問病人的什麼狀況？",
+                options: ["是否有抽菸習慣", "最高學歷", "是否有過敏史", "過往手術紀錄"],
+                answer: 2,
+                explanation: "Allergies 意指過敏，詢問病人對食物或藥物是否過敏。"
+            },
+            {
+                question: "「Hypertension」是指下列哪一種常見疾病？",
+                options: ["糖尿病", "氣喘", "低血壓", "高血壓"],
+                answer: 3,
+                explanation: "Hypertension 代表高血壓 (Hyper- 表示過高，tension 表示壓力)。"
+            },
+            {
+                question: "當詢問病人「Have you ever been admitted to a hospital?」，其中「admitted」意思是？",
+                options: ["住院/允許入院", "出院", "服藥", "轉診"],
+                answer: 0,
+                explanation: "admit to a hospital 代表辦理入院/住院。"
+            }
+        ];
+
+        // ================= STATE MANAGEMENT =================
+        let studentInfo = {
+            name: '',
+            dept: '',
+            id: ''
+        };
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOption = null;
+
+        // ================= RENDER FUNCTIONS =================
+        // Render Learning Content
+        function renderLearnContent() {
+            // Render Vocab Cards
+            const vocabGrid = document.getElementById('vocab-grid');
+            vocabGrid.innerHTML = vocabData.map(item => `
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm card-hover flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="text-lg font-bold text-slate-900">${item.word}</h4>
+                            <button onclick="speakText('${item.word}')" class="text-teal-600 hover:text-teal-800 p-1.5 rounded-lg hover:bg-teal-50 transition-colors" title="播放發音">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                        <div class="text-xs text-slate-500 mb-2 font-mono">${item.phonetic} <span class="ml-1 text-teal-600 italic font-sans">${item.type}</span></div>
+                        <p class="text-base font-semibold text-teal-700 mb-1">${item.meaning}</p>
+                        <p class="text-xs text-slate-500">${item.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Render Sentences
+            const sentenceList = document.getElementById('sentence-list');
+            sentenceList.innerHTML = sentenceData.map(item => `
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 card-hover">
+                    <div class="space-y-1">
+                        <p class="text-base font-semibold text-slate-800">${item.en}</p>
+                        <p class="text-sm text-slate-500">${item.zh}</p>
+                    </div>
+                    <button onclick="speakText('${item.en.replace(/'/g, "\\'")}')" class="self-start sm:self-center shrink-0 bg-teal-50 hover:bg-teal-100 text-teal-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center space-x-2">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>朗讀</span>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // TTS Speech Synthesis
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop previous
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert('您的瀏覽器不支援語音朗讀功能。');
+            }
+        }
+
+        // Navigation Tab Switching
+        function switchTab(tab) {
+            const pageLearn = document.getElementById('page-learn');
+            const pageQuiz = document.getElementById('page-quiz');
+            const tabLearn = document.getElementById('tab-learn');
+            const tabQuiz = document.getElementById('tab-quiz');
+
+            if (tab === 'learn') {
+                pageLearn.classList.remove('hidden');
+                pageQuiz.classList.add('hidden');
+                tabLearn.classList.add('active');
+                tabQuiz.classList.remove('active');
+            } else {
+                pageLearn.classList.add('hidden');
+                pageQuiz.classList.remove('hidden');
+                tabQuiz.classList.add('active');
+                tabLearn.classList.remove('active');
+            }
+        }
+
+        // ================= QUIZ LOGIC =================
+        function startQuiz(e) {
+            e.preventDefault();
+            studentInfo.name = document.getElementById('student-name').value.trim();
+            studentInfo.dept = document.getElementById('student-dept').value.trim();
+            studentInfo.id = document.getElementById('student-id').value.trim();
+
+            if (!studentInfo.name || !studentInfo.dept || !studentInfo.id) return;
+
+            document.getElementById('display-student-info').innerText = `${studentInfo.name} (${studentInfo.id})`;
+            document.getElementById('quiz-form-card').classList.add('hidden');
+            document.getElementById('quiz-game-card').classList.remove('hidden');
+
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            document.getElementById('current-q-num').innerText = currentQuestionIndex + 1;
+            document.getElementById('total-q-num').innerText = questionsData.length;
+            document.getElementById('question-text').innerText = `${currentQuestionIndex + 1}. ${q.question}`;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            // Hide feedback and Next button
+            document.getElementById('feedback-box').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+
+            selectedOption = null;
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-xl border border-slate-200 hover:border-teal-500 hover:bg-teal-50/50 transition-all text-slate-700 font-medium flex justify-between items-center`;
+                btn.innerHTML = `<span>${String.fromCharCode(65 + idx)}. ${opt}</span>`;
+                btn.onclick = () => selectAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(index, element) {
+            if (selectedOption !== null) return; // Prevent multiple clicks
+            selectedOption = index;
+
+            const q = questionsData[currentQuestionIndex];
+            const optionsBtns = document.getElementById('options-container').children;
+
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackText = document.getElementById('feedback-text');
+
+            if (index === q.answer) {
+                score += 20; // 5 questions, 20 pts each
+                element.classList.remove('border-slate-200', 'hover:border-teal-500');
+                element.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
+                
+                feedbackBox.className = "p-4 rounded-xl mb-6 text-sm font-medium flex items-start space-x-2 bg-emerald-50 text-emerald-800 border border-emerald-200";
+                feedbackIcon.className = "fa-solid fa-circle-check text-emerald-600 mt-0.5 text-base";
+                feedbackText.innerHTML = `<strong>答對了！</strong> ${q.explanation}`;
+            } else {
+                element.classList.remove('border-slate-200', 'hover:border-teal-500');
+                element.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-800');
+
+                // Highlight correct answer
+                optionsBtns[q.answer].classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
+
+                feedbackBox.className = "p-4 rounded-xl mb-6 text-sm font-medium flex items-start space-x-2 bg-rose-50 text-rose-800 border border-rose-200";
+                feedbackIcon.className = "fa-solid fa-circle-xmark text-rose-600 mt-0.5 text-base";
+                feedbackText.innerHTML = `<strong>答錯囉！</strong> 正確答案是 (${String.fromCharCode(65 + q.answer)})。<br>${q.explanation}`;
+            }
+
+            // Disable all option buttons
+            Array.from(optionsBtns).forEach(btn => btn.disabled = true);
+
+            feedbackBox.classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questionsData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-game-card').classList.add('hidden');
+            document.getElementById('quiz-result-card').classList.remove('hidden');
+
+            document.getElementById('res-name').innerText = studentInfo.name;
+            document.getElementById('res-dept').innerText = studentInfo.dept;
+            document.getElementById('res-id').innerText = studentInfo.id;
+            document.getElementById('res-score').innerText = `${score} / 100 分`;
+        }
+
+        function resetQuiz() {
+            document.getElementById('quiz-result-card').classList.add('hidden');
+            document.getElementById('quiz-form-card').classList.remove('hidden');
+            document.getElementById('student-info-form').reset();
+        }
+
+        // CSV Download Function
+        function downloadCSV() {
+            const now = new Date();
+            const timestamp = now.toLocaleString('zh-TW');
+
+            // BOM (\uFEFF) ensures Chinese characters display correctly in Excel
+            const csvHeader = "\uFEFF姓名,科系,學號,測驗得分,總分,完成時間\n";
+            const csvRow = `"${studentInfo.name}","${studentInfo.dept}","${studentInfo.id}",${score},100,"${timestamp}"\n`;
+            
+            const blob = new Blob([csvHeader + csvRow], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+
+            link.setAttribute("href", url);
+            link.setAttribute("download", `醫護英文測驗成績_${studentInfo.id}_${studentInfo.name}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Initial Load
+        window.onload = function() {
+            renderLearnContent();
+        };
+    </script>
+</body>
+</html>
