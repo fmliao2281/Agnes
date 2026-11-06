@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>醫護英文教學網頁 - Orientation & Directions</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .flip-card {
+            perspective: 1000px;
+        }
+        .flip-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            backface-visibility: hidden;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col font-sans">
+
+    <!-- Header Navigation -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-medical-600 text-white p-2.5 rounded-xl shadow-md">
+                        <i class="fa-solid font-bold fa-hospital-user text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-800 leading-tight">醫護英文：Orientation</h1>
+                        <p class="text-xs text-slate-500">Unit 2: Hospital Directions & Departments</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Tabs -->
+                <nav class="hidden md:flex space-x-1" id="desktopNav">
+                    <button onclick="switchTab('student-info')" class="nav-btn px-4 py-2 text-sm font-medium rounded-lg transition-colors text-medical-600 bg-medical-50" data-tab="student-info">
+                        <i class="fa-solid fa-id-card mr-1.5"></i> 學生報到
+                    </button>
+                    <button onclick="switchTab('study-mode')" class="nav-btn px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" data-tab="study-mode">
+                        <i class="fa-solid fa-book-medical mr-1.5"></i> 課堂學習
+                    </button>
+                    <button onclick="switchTab('matching-game')" class="nav-btn px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" data-tab="matching-game">
+                        <i class="fa-solid fa-gamepad mr-1.5"></i> 配對遊戲測驗
+                    </button>
+                    <button onclick="switchTab('teacher-settings')" class="nav-btn px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" data-tab="teacher-settings">
+                        <i class="fa-solid fa-gear mr-1.5"></i> 教師設雲端
+                    </button>
+                </nav>
+
+                <!-- Student Status Pill -->
+                <div id="studentBadge" class="hidden sm:flex items-center bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
+                    <span id="badgeStudentName">未登入</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation bar -->
+        <div class="md:hidden flex border-t border-slate-100 bg-slate-50 justify-around p-2 text-xs">
+            <button onclick="switchTab('student-info')" class="mobile-nav-btn flex flex-col items-center py-1 text-medical-600" data-tab="student-info">
+                <i class="fa-solid fa-id-card text-base"></i>
+                <span>報到</span>
+            </button>
+            <button onclick="switchTab('study-mode')" class="mobile-nav-btn flex flex-col items-center py-1 text-slate-600" data-tab="study-mode">
+                <i class="fa-solid fa-book-medical text-base"></i>
+                <span>學習</span>
+            </button>
+            <button onclick="switchTab('matching-game')" class="mobile-nav-btn flex flex-col items-center py-1 text-slate-600" data-tab="matching-game">
+                <i class="fa-solid fa-gamepad text-base"></i>
+                <span>測驗遊戲</span>
+            </button>
+            <button onclick="switchTab('teacher-settings')" class="mobile-nav-btn flex flex-col items-center py-1 text-slate-600" data-tab="teacher-settings">
+                <i class="fa-solid fa-gear text-base"></i>
+                <span>設定</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- TAB 1: STUDENT INFO FORM -->
+        <section id="student-info" class="tab-content block">
+            <div class="max-w-xl mx-auto bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-medical-600 to-medical-700 p-6 text-white text-center">
+                    <i class="fa-solid fa-user-graduate text-4xl mb-3 opacity-90"></i>
+                    <h2 class="text-2xl font-bold">Orientation 測驗學生登入</h2>
+                    <p class="text-medical-100 text-sm mt-1">請填寫個人資料以開始學習與紀錄測驗成績</p>
+                </div>
+                
+                <form id="infoForm" onsubmit="handleFormSubmit(event)" class="p-6 sm:p-8 space-y-5">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="studentName">
+                            <i class="fa-solid fa-user text-medical-600 mr-1.5"></i> 學生姓名 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="studentName" required placeholder="例如：張小美" 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition-all">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="department">
+                            <i class="fa-solid fa-graduation-cap text-medical-600 mr-1.5"></i> 科系 <span class="text-red-500">*</span>
+                        </label>
+                        <select id="department" required class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition-all bg-white">
+                            <option value="">-- 請選擇科系 --</option>
+                            <option value="護理系">護理系 (Nursing)</option>
+                            <option value="醫事檢驗生物技術系">醫檢系 (Medical Laboratory)</option>
+                            <option value="放射技術系">放射系 (Radiology Technology)</option>
+                            <option value="物理治療系">物治系 (Physical Therapy)</option>
+                            <option value="其他醫護相關科系">其他醫護科系</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1" for="studentId">
+                            <i class="fa-solid fa-address-card text-medical-600 mr-1.5"></i> 學號 <span class="text-red-500">*</span>
+                        </label>
+                        <input type="text" id="studentId" required placeholder="例如：N11100123" 
+                            class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-medical-500 focus:border-medical-500 outline-none transition-all">
+                    </div>
+
+                    <button type="submit" class="w-full bg-medical-600 hover:bg-medical-700 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center space-x-2">
+                        <span>儲存資料並開始課堂學習</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 2: STUDY MODE -->
+        <section id="study-mode" class="tab-content hidden space-y-8">
+            <!-- Learning Header -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                    <i class="fa-solid fa-book-open-reader text-medical-600"></i>
+                    單字與對話總覽 (Vocabulary & Directions)
+                </h2>
+                <p class="text-sm text-slate-500 mt-1">點擊字詞卡片可收聽發音，協助記憶科室名稱與方向指引。</p>
+            </div>
+
+            <!-- Direction Words Grid -->
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-l-4 border-medical-600 pl-3">1. 方向指引與位置介詞 (Directions & Prepositions)</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4" id="directionVocabGrid">
+                    <!-- Dynamic Generation via JS -->
+                </div>
+            </div>
+
+            <!-- Medical Departments Grid -->
+            <div>
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-l-4 border-medical-600 pl-3">2. 醫院科室與人員 (Departments & Staff)</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="deptVocabGrid">
+                    <!-- Dynamic Generation via JS -->
+                </div>
+            </div>
+
+            <!-- Interactive Dialogue Practice -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-lg font-bold text-slate-800 mb-4 border-l-4 border-medical-600 pl-3">3. 實用醫院指引情境對話 (Dialogue Practice)</h3>
+                <div class="space-y-4" id="dialogueContainer">
+                    <!-- Dialogue items populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: MATCHING GAME & TEST -->
+        <section id="matching-game" class="tab-content hidden space-y-6">
+            <!-- Game Banner / Control bar -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fa-solid fa-puzzle-piece text-amber-500"></i>
+                        Orientation 圖片與動作配對遊戲測驗
+                    </h2>
+                    <p class="text-xs sm:text-sm text-slate-500 mt-1">請將「圖片/圖示」與正確的「英文詞彙」進行兩兩配對。完成後將自動記錄成績！</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-center bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl">
+                        <span class="block text-xs text-slate-400 font-semibold">花費時間</span>
+                        <span id="gameTimer" class="font-mono text-lg font-bold text-medical-600">00:00</span>
+                    </div>
+                    <div class="text-center bg-slate-50 border border-slate-200 px-4 py-2 rounded-xl">
+                        <span class="block text-xs text-slate-400 font-semibold">剩餘配對</span>
+                        <span id="pairsLeft" class="font-mono text-lg font-bold text-amber-600">8</span>
+                    </div>
+                    <button onclick="startNewGame()" class="bg-medical-600 hover:bg-medical-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> 重新開始
+                    </button>
+                </div>
+            </div>
+
+            <!-- Card Grid container -->
+            <div id="gameBoard" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <!-- Game cards dynamically populated here -->
+            </div>
+
+            <!-- Quiz Result Modal Container (Hidden initially) -->
+            <div id="resultModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 text-center transform transition-all">
+                    <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800">測驗完成！</h3>
+                    <p class="text-slate-500 text-sm mt-1">成績已自動紀錄至系統</p>
+
+                    <div class="bg-slate-50 rounded-2xl p-4 my-6 border border-slate-100 space-y-2 text-left text-sm">
+                        <div class="flex justify-between border-b border-slate-200 pb-2">
+                            <span class="text-slate-500">學生姓名:</span>
+                            <span id="resName" class="font-semibold text-slate-800">--</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-200 pb-2">
+                            <span class="text-slate-500">科系 / 學號:</span>
+                            <span id="resInfo" class="font-semibold text-slate-800">--</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-200 pb-2">
+                            <span class="text-slate-500">測驗總花費時間:</span>
+                            <span id="resTime" class="font-bold text-medical-600">--</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-slate-500">評定得分:</span>
+                            <span id="resScore" class="text-2xl font-extrabold text-emerald-600">100 分</span>
+                        </div>
+                    </div>
+
+                    <!-- Sync Status -->
+                    <div id="syncStatus" class="mb-6 p-3 rounded-xl bg-blue-50 text-blue-700 text-xs flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-spinner fa-spin"></i> 正在傳送成績至老師雲端...
+                    </div>
+
+                    <div class="flex gap-3">
+                        <button onclick="closeResultModal()" class="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 rounded-xl transition">
+                            關閉視窗
+                        </button>
+                        <button onclick="startNewGame(); closeResultModal();" class="flex-1 bg-medical-600 hover:bg-medical-700 text-white font-semibold py-3 rounded-xl transition shadow-lg">
+                            再挑戰一次
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: TEACHER & CLOUD SETTINGS -->
+        <section id="teacher-settings" class="tab-content hidden space-y-6">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2 mb-2">
+                    <i class="fa-solid fa-cloud-arrow-up text-medical-600"></i>
+                    老師 Google 雲端數據資料同步設定
+                </h2>
+                <p class="text-sm text-slate-600 leading-relaxed">
+                    本教學系統支援將學生的「Orientation 測試成績資料」自動同步寫入老師的 **Google 試算表 (Google Sheets)**。
+                </p>
+
+                <!-- Script URL Setting Input -->
+                <div class="mt-6 bg-slate-50 p-5 rounded-xl border border-slate-200">
+                    <label class="block text-sm font-semibold text-slate-700 mb-2" for="scriptUrl">
+                        Google Apps Script Web App URL (網路應用程式網址)
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="url" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" 
+                            class="flex-1 px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-medical-500 outline-none">
+                        <button onclick="saveScriptUrl()" class="bg-medical-600 hover:bg-medical-700 text-white px-5 py-2.5 rounded-xl font-medium text-sm transition">
+                            儲存網址
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-2">網址會儲存在本機瀏覽器中，學生進行測驗後將直接上傳資料。</p>
+                </div>
+
+                <!-- Google Apps Script Guide Instructions -->
+                <div class="mt-6 border-t border-slate-100 pt-6">
+                    <h3 class="font-bold text-slate-800 text-md mb-3 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info text-amber-500"></i> 如何建立 Google Apps Script 自動寫入表單？
+                    </h3>
+                    <ol class="list-decimal list-inside text-sm text-slate-600 space-y-2">
+                        <li>開啟新的 <a href="https://sheets.google.com" target="_blank" class="text-medical-600 underline">Google 試算表</a>，命名為 <strong>Orientation 測試成績資料表</strong>。</li>
+                        <li>於試算表中點選頂部選單 <strong>「擴充功能」 -> 「Apps Script」</strong>。</li>
+                        <li>將預設代碼清空，並貼上以下代碼：</li>
+                    </ol>
+
+                    <!-- Code Snippet Box -->
+                    <div class="relative bg-slate-900 text-slate-100 p-4 rounded-xl mt-3 text-xs font-mono overflow-x-auto">
+                        <pre><code>function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  
+  // 若為第一筆資料，自動設定欄位標頭
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow(["時間", "姓名", "科系", "學號", "測驗花費時間(秒)", "得分"]);
+  }
+  
+  sheet.appendRow([
+    new Date(),
+    data.name,
+    data.department,
+    data.studentId,
+    data.timeSpent,
+    data.score
+  ]);
+  
+  return ContentService.createTextOutput(JSON.stringify({"result": "success"}))
+                       .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+                    </div>
+
+                    <ol start="4" class="list-decimal list-inside text-sm text-slate-600 space-y-2 mt-4">
+                        <li>點選右上角 <strong>「部署」 -> 「新增部署」</strong>。</li>
+                        <li>種類選擇 <strong>「Web 應用程式」</strong>，將「誰有權存取」改為 <strong>「任何人 (Anyone)」</strong>。</li>
+                        <li>點選部署授權後，複製產生的 <strong>Web App URL</strong>，並貼回上方欄位即完成設定！</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Export Local Records CSV Feature -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-md">本機測驗紀錄備份 (Orientation 成績)</h3>
+                        <p class="text-xs text-slate-500">即使未設定雲端 API，本系統亦會在瀏覽器本機儲存測驗紀錄。</p>
+                    </div>
+                    <button onclick="downloadCSV()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs px-4 py-2.5 rounded-xl font-medium transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-file-csv"></i> 下載 CSV 報表
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-700 uppercase font-bold border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">時間</th>
+                                <th class="p-3">姓名</th>
+                                <th class="p-3">科系</th>
+                                <th class="p-3">學號</th>
+                                <th class="p-3">耗時</th>
+                                <th class="p-3">得分</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recordsTableBody">
+                            <tr>
+                                <td colspan="6" class="p-4 text-center text-slate-400">尚無測驗紀錄</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 mt-auto">
+        <p>醫護英文課程教學軟體 &copy; 2026 Orientation & Giving Directions Unit</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Data Structures for Vocabulary, Directions & Departments
+        const DIRECTIONS_VOCAB = [
+            { en: 'Go straight', zh: '直走', icon: 'fa-arrow-up', type: 'action' },
+            { en: 'Turn left', zh: '左轉', icon: 'fa-arrow-turn-left', type: 'action' },
+            { en: 'Turn right', zh: '右轉', icon: 'fa-arrow-turn-right', type: 'action' },
+            { en: 'Go through', zh: '穿過 / 通過', icon: 'fa-door-open', type: 'action' },
+            { en: 'Take the elevator', zh: '搭乘電梯', icon: 'fa-elevator', type: 'action' },
+            { en: 'Next to / Beside', zh: '在……隔壁', icon: 'fa-vector-square', type: 'prep' },
+            { en: 'Across from', zh: '在……對面', icon: 'fa-arrows-left-right', type: 'prep' },
+            { en: 'In front of', zh: '在……前面', icon: 'fa-hand-point-right', type: 'prep' }
+        ];
+
+        const DEPT_VOCAB = [
+            { en: 'Radiology', zh: '放射學科 (X-Ray, CT)', icon: 'fa-x-ray' },
+            { en: 'Orthopedics', zh: '骨科', icon: 'fa-bone' },
+            { en: 'Dermatology', zh: '皮膚科', icon: 'fa-hand-dots' },
+            { en: 'Pediatric Unit', zh: '小兒科', icon: 'fa-baby' },
+            { en: 'Pharmacy', zh: '藥局', icon: 'fa-prescription-bottle-medical' },
+            { en: 'Pharmacist', zh: '藥劑師', icon: 'fa-user-nurse' },
+            { en: 'Physician', zh: '內科醫師 / 醫師', icon: 'fa-user-doctor' },
+            { en: 'Emergency (ER)', zh: '急診室', icon: 'fa-truck-medical' },
+            { en: 'Oncology Unit', zh: '腫瘤科', icon: 'fa-notes-medical' },
+            { en: 'Cardiac Unit', zh: '心臟科', icon: 'fa-heart-pulse' },
+            { en: 'Renal Unit', zh: '腎臟科', icon: 'fa-kidney' },
+            { en: 'Medical/Surgical Unit', zh: '內/外科病房', icon: 'fa-bed-pulse' }
+        ];
+
+        const DIALOGUES = [
+            {
+                q: "A: Where do I go to get an X-ray?",
+                a: "B: Turn right after the reception area. Go through the double doors and keep going straight. Radiology will be on your right, beside the orthopedic unit."
+            },
+            {
+                q: "A: Excuse me. How do I go to the oncology unit?",
+                a: "B: Go straight and take the elevator to the second floor. Turn right and keep going straight. You will see the oncology unit on the right-hand side. It is across from the renal unit."
+            },
+            {
+                q: "A: How do I go to the coffee shop from the cardiac unit?",
+                a: "B: Go straight and take the elevator downstairs. Then, go straight until you see the coffee shop on the right-hand side."
+            }
+        ];
+
+        // App State Management
+        let currentUser = null;
+        let gameCards = [];
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let gameTimerInterval = null;
+        let secondsElapsed = 0;
+        let testRecords = [];
+
+        // Initialize App
+        window.onload = function() {
+            renderStudyVocab();
+            renderDialogues();
+            loadSavedUser();
+            loadScriptUrl();
+            loadLocalRecords();
+        };
+
+        // Navigation Tabs Handling
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Update Desktop Nav styles
+            document.querySelectorAll('#desktopNav .nav-btn').forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabId) {
+                    btn.className = 'nav-btn px-4 py-2 text-sm font-medium rounded-lg transition-colors text-medical-600 bg-medical-50';
+                } else {
+                    btn.className = 'nav-btn px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors';
+                }
+            });
+
+            // If entering game tab, check user profile & start
+            if (tabId === 'matching-game') {
+                if (!currentUser) {
+                    alert('請先填寫學生個人資料（姓名、科系、學號）以記錄測驗成績！');
+                    switchTab('student-info');
+                    return;
+                }
+                if (gameCards.length === 0 || matchedPairs === 8) {
+                    startNewGame();
+                }
+            }
+        }
+
+        // Student Form Submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('studentName').value.trim();
+            const dept = document.getElementById('department').value;
+            const id = document.getElementById('studentId').value.trim();
+
+            if (!name || !dept || !id) {
+                alert('請完整填寫所有欄位！');
+                return;
+            }
+
+            currentUser = { name, department: dept, studentId: id };
+            localStorage.setItem('med_english_student', JSON.stringify(currentUser));
+            updateStudentBadge();
+
+            alert(`歡迎 ${currentUser.name} 同學！資料已儲存。`);
+            switchTab('study-mode');
+        }
+
+        function loadSavedUser() {
+            const saved = localStorage.getItem('med_english_student');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                document.getElementById('studentName').value = currentUser.name || '';
+                document.getElementById('department').value = currentUser.department || '';
+                document.getElementById('studentId').value = currentUser.studentId || '';
+                updateStudentBadge();
+            }
+        }
+
+        function updateStudentBadge() {
+            if (currentUser) {
+                document.getElementById('badgeStudentName').innerText = `${currentUser.name} (${currentUser.department})`;
+                document.getElementById('studentBadge').classList.remove('hidden');
+            }
+        }
+
+        // Text To Speech Helper
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Render Study Section Data
+        function renderStudyVocab() {
+            const dirContainer = document.getElementById('directionVocabGrid');
+            dirContainer.innerHTML = DIRECTIONS_VOCAB.map(v => `
+                <div onclick="speakText('${v.en}')" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-medical-50 text-medical-600 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid ${v.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-800 text-sm flex items-center gap-1">
+                            ${v.en} <i class="fa-solid fa-volume-high text-slate-300 text-xs"></i>
+                        </div>
+                        <div class="text-xs text-slate-500">${v.zh}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            const deptContainer = document.getElementById('deptVocabGrid');
+            deptContainer.innerHTML = DEPT_VOCAB.map(v => `
+                <div onclick="speakText('${v.en}')" class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-all cursor-pointer flex items-center space-x-3 group">
+                    <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid ${v.icon}"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-slate-800 text-sm flex items-center gap-1">
+                            ${v.en} <i class="fa-solid fa-volume-high text-slate-300 text-xs"></i>
+                        </div>
+                        <div class="text-xs text-slate-500">${v.zh}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderDialogues() {
+            const container = document.getElementById('dialogueContainer');
+            container.innerHTML = DIALOGUES.map(d => `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+                    <div class="flex justify-between items-start">
+                        <p class="font-semibold text-medical-700 text-sm">${d.q}</p>
+                        <button onclick="speakText('${d.q.replace('A: ', '')}')" class="text-slate-400 hover:text-medical-600 text-xs p-1">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </div>
+                    <div class="flex justify-between items-start">
+                        <p class="text-slate-700 text-sm leading-relaxed">${d.a}</p>
+                        <button onclick="speakText('${d.a.replace('B: ', '')}')" class="text-slate-400 hover:text-medical-600 text-xs p-1">
+                            <i class="fa-solid fa-volume-high"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // MATCHING GAME LOGIC
+        function startNewGame() {
+            // Select 8 items randomly from combined vocabulary
+            const pool = [
+                ...DIRECTIONS_VOCAB.map(item => ({ id: item.en, label: item.en, icon: item.icon, zh: item.zh })),
+                ...DEPT_VOCAB.map(item => ({ id: item.en, label: item.en, icon: item.icon, zh: item.zh }))
+            ];
+            
+            // Shuffle pool & take 8
+            const selected = pool.sort(() => 0.5 - Math.random()).slice(0, 8);
+
+            // Create pairs: One Card with Icon/Image, One Card with English Text
+            let cards = [];
+            selected.forEach((item, idx) => {
+                // Card A: Visual Icon
+                cards.push({
+                    pairId: idx,
+                    type: 'icon',
+                    content: item.icon,
+                    zh: item.zh,
+                    isFlipped: false,
+                    isMatched: false
+                });
+                // Card B: Text
+                cards.push({
+                    pairId: idx,
+                    type: 'text',
+                    content: item.label,
+                    zh: item.zh,
+                    isFlipped: false,
+                    isMatched: false
+                });
+            });
+
+            // Shuffle all cards
+            gameCards = cards.sort(() => 0.5 - Math.random());
+            flippedCards = [];
+            matchedPairs = 0;
+            document.getElementById('pairsLeft').innerText = 8;
+
+            // Timer setup
+            clearInterval(gameTimerInterval);
+            secondsElapsed = 0;
+            document.getElementById('gameTimer').innerText = '00:00';
+            gameTimerInterval = setInterval(() => {
+                secondsElapsed++;
+                const mins = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
+                const secs = String(secondsElapsed % 60).padStart(2, '0');
+                document.getElementById('gameTimer').innerText = `${mins}:${secs}`;
+            }, 1000);
+
+            renderGameBoard();
+        }
+
+        function renderGameBoard() {
+            const board = document.getElementById('gameBoard');
+            board.innerHTML = gameCards.map((card, index) => {
+                const flippedClass = card.isFlipped || card.isMatched ? 'flipped' : '';
+                const matchedClass = card.isMatched ? 'opacity-40 cursor-default' : 'cursor-pointer';
+
+                let cardFrontContent = '';
+                if (card.type === 'icon') {
+                    cardFrontContent = `<div class="text-center"><i class="fa-solid ${card.content} text-4xl text-medical-600"></i></div>`;
+                } else {
+                    cardFrontContent = `
+                        <div class="text-center px-2">
+                            <span class="font-bold text-slate-800 text-sm sm:text-base block">${card.content}</span>
+                            <span class="text-xs text-slate-400 block mt-1">${card.zh}</span>
+                        </div>`;
+                }
+
+                return `
+                    <div class="flip-card h-32 ${flippedClass} ${matchedClass}" onclick="handleCardClick(${index})">
+                        <div class="flip-card-inner relative w-full h-full duration-500">
+                            <!-- Card Back (Cover) -->
+                            <div class="flip-card-front absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900 rounded-2xl flex items-center justify-center text-white border-2 border-slate-600 shadow-md">
+                                <i class="fa-solid fa-hospital-symbol text-2xl opacity-40"></i>
+                            </div>
+                            <!-- Card Front (Revealed) -->
+                            <div class="flip-card-back absolute inset-0 bg-white rounded-2xl border-2 border-medical-500 shadow-lg flex items-center justify-center p-3">
+                                ${cardFrontContent}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleCardClick(index) {
+            const card = gameCards[index];
+            if (card.isFlipped || card.isMatched || flippedCards.length >= 2) return;
+
+            card.isFlipped = true;
+            flippedCards.push({ index, card });
+            renderGameBoard();
+
+            if (flippedCards.length === 2) {
+                const [first, second] = flippedCards;
+
+                // Check match
+                if (first.card.pairId === second.card.pairId && first.card.type !== second.card.type) {
+                    // Match found
+                    setTimeout(() => {
+                        first.card.isMatched = true;
+                        second.card.isMatched = true;
+                        matchedPairs++;
+                        document.getElementById('pairsLeft').innerText = 8 - matchedPairs;
+                        flippedCards = [];
+                        renderGameBoard();
+
+                        if (matchedPairs === 8) {
+                            handleGameCompletion();
+                        }
+                    }, 400);
+                } else {
+                    // Not a match, flip back
+                    setTimeout(() => {
+                        first.card.isFlipped = false;
+                        second.card.isFlipped = false;
+                        flippedCards = [];
+                        renderGameBoard();
+                    }, 1000);
+                }
+            }
+        }
+
+        // Game Completed Event
+        function handleGameCompletion() {
+            clearInterval(gameTimerInterval);
+            const timeStr = document.getElementById('gameTimer').innerText;
+
+            // Fill Result Modal
+            document.getElementById('resName').innerText = currentUser.name;
+            document.getElementById('resInfo').innerText = `${currentUser.department} / ${currentUser.studentId}`;
+            document.getElementById('resTime').innerText = `${timeStr} (${secondsElapsed} 秒)`;
+            document.getElementById('resultModal').classList.remove('hidden');
+
+            // Save Record Locally & Send to Cloud
+            const record = {
+                timestamp: new Date().toLocaleString(),
+                name: currentUser.name,
+                department: currentUser.department,
+                studentId: currentUser.studentId,
+                timeSpent: secondsElapsed,
+                score: 100
+            };
+
+            saveRecordLocally(record);
+            uploadResultToGoogleDrive(record);
+        }
+
+        function closeResultModal() {
+            document.getElementById('resultModal').classList.add('hidden');
+        }
+
+        // Save & Sync Data Operations
+        function saveRecordLocally(record) {
+            testRecords.unshift(record);
+            localStorage.setItem('med_english_records', JSON.stringify(testRecords));
+            renderRecordsTable();
+        }
+
+        function loadLocalRecords() {
+            const saved = localStorage.getItem('med_english_records');
+            if (saved) {
+                testRecords = JSON.parse(saved);
+                renderRecordsTable();
+            }
+        }
+
+        function renderRecordsTable() {
+            const tbody = document.getElementById('recordsTableBody');
+            if (testRecords.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">尚無測驗紀錄</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = testRecords.map(r => `
+                <tr class="border-b border-slate-100 hover:bg-slate-50">
+                    <td class="p-3">${r.timestamp}</td>
+                    <td class="p-3 font-semibold text-slate-800">${r.name}</td>
+                    <td class="p-3">${r.department}</td>
+                    <td class="p-3">${r.studentId}</td>
+                    <td class="p-3 font-mono">${r.timeSpent} 秒</td>
+                    <td class="p-3 font-bold text-emerald-600">${r.score}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Send Test Results to Teacher's Google Apps Script
+        function uploadResultToGoogleDrive(record) {
+            const scriptUrl = localStorage.getItem('med_english_script_url');
+            const syncStatus = document.getElementById('syncStatus');
+
+            if (!scriptUrl) {
+                syncStatus.className = "mb-6 p-3 rounded-xl bg-amber-50 text-amber-700 text-xs flex items-center justify-center gap-2";
+                syncStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 尚未設定老師 Google 雲端網址 (已存為本機備份)`;
+                return;
+            }
+
+            syncStatus.className = "mb-6 p-3 rounded-xl bg-blue-50 text-blue-700 text-xs flex items-center justify-center gap-2";
+            syncStatus.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> 正在上傳成績至老師 Google 試算表...`;
+
+            fetch(scriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(record)
+            }).then(() => {
+                syncStatus.className = "mb-6 p-3 rounded-xl bg-emerald-50 text-emerald-700 text-xs flex items-center justify-center gap-2";
+                syncStatus.innerHTML = `<i class="fa-solid fa-circle-check text-base"></i> 成績已順利同步至老師 Google 雲端硬碟！`;
+            }).catch(err => {
+                console.error(err);
+                syncStatus.className = "mb-6 p-3 rounded-xl bg-red-50 text-red-700 text-xs flex items-center justify-center gap-2";
+                syncStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> 同步失敗，成績已存至本機備份。`;
+            });
+        }
+
+        function saveScriptUrl() {
+            const url = document.getElementById('scriptUrl').value.trim();
+            if (url) {
+                localStorage.setItem('med_english_script_url', url);
+                alert('Google Web App 網址已儲存！測驗完成後將自動上傳資料。');
+            } else {
+                localStorage.removeItem('med_english_script_url');
+                alert('已清除雲端網址。');
+            }
+        }
+
+        function loadScriptUrl() {
+            const savedUrl = localStorage.getItem('med_english_script_url');
+            if (savedUrl) {
+                document.getElementById('scriptUrl').value = savedUrl;
+            }
+        }
+
+        // Export local records to CSV
+        function downloadCSV() {
+            if (testRecords.length === 0) {
+                alert('目前沒有可匯出的紀錄！');
+                return;
+            }
+            let csvContent = "\uFEFF"; // UTF-8 BOM
+            csvContent += "時間,姓名,科系,學號,測驗花費時間(秒),得分\n";
+
+            testRecords.forEach(r => {
+                csvContent += `"${r.timestamp}","${r.name}","${r.department}","${r.studentId}",${r.timeSpent},${r.score}\n`;
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Orientation_Quiz_Records_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
